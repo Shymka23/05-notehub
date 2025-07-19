@@ -5,7 +5,7 @@ import css from "./App.module.css";
 import "modern-normalize/modern-normalize.css";
 import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
-import SearchBar from "../SearchBar/SearchBox";
+import SearchBar from "../SearchBox/SearchBox";
 import Modal from "../Modal/Modal";
 import NoteForm from "../NoteForm/NoteForm";
 import Loader from "../Loader/Loader";
