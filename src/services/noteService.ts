@@ -40,23 +40,43 @@ export interface DeleteNoteResponse {
 export async function fetchNotes(
   params: FetchNotesParams
 ): Promise<FetchNotesResponse> {
-  // Видаляємо search, якщо він порожній або undefined
   const filteredParams = { ...params };
   if (!filteredParams.search) {
     delete filteredParams.search;
   }
-  const { data } = await axiosInstance.get<FetchNotesResponse>("", {
-    params: filteredParams,
-  });
-  return data;
+  try {
+    const { data } = await axiosInstance.get<FetchNotesResponse>("", {
+      params: filteredParams,
+    });
+    return data;
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
+    throw new Error(
+      err.response?.data?.message || "Не вдалося отримати нотатки"
+    );
+  }
 }
 
 export async function createNote(params: CreateNoteParams): Promise<Note> {
-  const { data } = await axiosInstance.post<Note>("", params);
-  return data;
+  try {
+    const { data } = await axiosInstance.post<Note>("", params);
+    return data;
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
+    throw new Error(
+      err.response?.data?.message || "Не вдалося створити нотатку"
+    );
+  }
 }
 
 export async function deleteNote(id: string): Promise<DeleteNoteResponse> {
-  const { data } = await axiosInstance.delete<DeleteNoteResponse>(`/${id}`);
-  return data;
+  try {
+    const { data } = await axiosInstance.delete<DeleteNoteResponse>(`/${id}`);
+    return data;
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } } };
+    throw new Error(
+      err.response?.data?.message || "Не вдалося видалити нотатку"
+    );
+  }
 }
