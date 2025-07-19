@@ -3,11 +3,11 @@ import { Formik, Form, Field, ErrorMessage as FormikError } from "formik";
 import * as Yup from "yup";
 import css from "./NoteForm.module.css";
 import type { NoteTag } from "../../types/note";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
 
 export interface NoteFormProps {
-  onSubmit: (values: { title: string; content: string; tag: NoteTag }) => void;
   onCancel: () => void;
-  isLoading?: boolean;
 }
 
 const TAGS = ["Todo", "Work", "Personal", "Meeting", "Shopping"] as const;
@@ -29,17 +29,22 @@ const initialValues = {
   tag: "Todo",
 };
 
-const NoteForm: React.FC<NoteFormProps> = ({
-  onSubmit,
-  onCancel,
-  isLoading,
-}) => {
+const NoteForm: React.FC<NoteFormProps> = ({ onCancel }) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      onCancel();
+    },
+  });
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values, { resetForm }) => {
-        onSubmit({ ...values, tag: values.tag as NoteTag });
+        mutation.mutate({ ...values, tag: values.tag as NoteTag });
         resetForm();
       }}
     >
@@ -90,9 +95,9 @@ const NoteForm: React.FC<NoteFormProps> = ({
             <button
               type="submit"
               className={css.submitButton}
-              disabled={isLoading}
+              disabled={mutation.isPending}
             >
-              Create note
+              Створити нотатку
             </button>
           </div>
         </Form>

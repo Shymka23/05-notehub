@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import css from "./SearchBox.module.css";
+import React from "react";
 
-export interface SearchBarProps {
+export interface SearchBoxProps {
   onSearch: (value: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [value, setValue] = useState("");
+const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
+  const [value, setValue] = React.useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -15,15 +14,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <input
-      className={css.input}
       type="text"
-      name="search"
-      placeholder="Search notes"
+      placeholder="Пошук нотаток..."
       value={value}
       onChange={handleChange}
-      autoComplete="off"
+      style={{
+        padding: "8px",
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+        minWidth: 200,
+      }}
     />
   );
 };
 
-export default SearchBar;
+export default SearchBox;
